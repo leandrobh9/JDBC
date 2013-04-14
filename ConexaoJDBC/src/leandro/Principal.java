@@ -14,11 +14,14 @@ import java.util.Properties;
 public class Principal {
 
 	private Properties properties;
-	private Boolean executarDDL = true;
+	private Boolean executarDDL = false;
 	private Boolean executarInsert = false;
 	private Boolean executarTruncate = false;
 	private Boolean executarInsertMilhoes = true;
 	private TipoBase tipoBase = TipoBase.ORACLE;
+	
+	private static final String createTableOracle = "create table pessoa (ident number, nome varchar(30))";
+	private static final String createTableMysql = "create table pessoa (id int auto_increment primary key, nome varchar(40))";
 
 	public static void main(String[] args) throws SQLException {
 		new Principal().execucao();
@@ -28,10 +31,11 @@ public class Principal {
 		Connection conn = this.getConnection();
 		System.out.println("Conexão aberta...");
 
+//		String sqlDDL1 = "drop table if exists pessoa";
+//		this.ddl(conn, sqlDDL1);
+
 		if (this.executarDDL){
-			String sqlDDL1 = "drop table if exists pessoa";
-			this.ddl(conn, sqlDDL1);
-			String sqlDDL2 = "create table pessoa (id int auto_increment primary key, nome varchar(40))";
+			String sqlDDL2 = tipoBase.equals(TipoBase.ORACLE) ? createTableOracle : createTableMysql;
 			this.ddl(conn, sqlDDL2);
 		}
 		
